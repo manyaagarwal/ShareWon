@@ -36,5 +36,10 @@ export const Routes = [{
     route: "/sell-sharewon", 
     controller:TransactionController,
     action:"sell"
+} , { 
+    method: "post", 
+    route: "/update-payment", 
+    controller: TransactionController, 
+    action: "paymentStatus"
 }
 ];

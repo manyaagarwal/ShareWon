@@ -1,8 +1,9 @@
-import { getRepository } from "typeorm";
+import { getRepository, getConnection } from "typeorm";
 import { NextFunction, Request, Response } from "express";
 import { Transaction } from "../entity/Transaction";
 import { stripe, stripePublicKey } from "../payments";
 import { raw } from "body-parser";
+import { stat } from "fs";
 
 export class TransactionController {
   private transactionRepository = getRepository(Transaction);
@@ -37,11 +38,12 @@ export class TransactionController {
         type: 0,
         status: 0,
         stripe_id: paymentIntent.id,
-        transaction_address: transaction_address, //probably to be updated in a different function
+        transaction_address: "", //probably to be updated in a different function
         createdAt: new Date(),
       };
       response.send({
-        publishableKey:stripePublicKey,
+        paymentIntentId: paymentIntent.id,
+        publishableKey: stripePublicKey,
         clientSecret: paymentIntent.client_secret,
       });
 
@@ -49,6 +51,27 @@ export class TransactionController {
     } catch (e) {
       console.log(e);
     }
+  }
+
+   /*
+         @params request.body {
+           paymentIntentId,
+           status (1 for success, 2 for fail),
+           transaction_address (optional)
+        } 
+
+    */
+  async paymentStatus(
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) {
+    const { paymentIntentId, status } = request.body;
+    const transactionAddress = status == 1 ? request.body.transaction_address : ""
+    let transactionToUpdate = await this.transactionRepository.findOne({stripe_id: paymentIntentId})
+    transactionToUpdate.status = status
+    transactionToUpdate.transaction_address = transactionAddress
+    return this.transactionRepository.save(transactionToUpdate)
   }
 
   async sell(request: Request, response: Response, next: NextFunction) {
@@ -65,6 +88,7 @@ export class TransactionController {
 
     // Send publishable key and PaymentIntent details to client
     return this.transactionRepository.save(transaction);
+    
   }
 
   async remove(request: Request, response: Response, next: NextFunction) {
