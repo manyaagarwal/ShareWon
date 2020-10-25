@@ -4,6 +4,7 @@ import * as express from "express";
 import * as cors from 'cors'
 import * as bodyParser from "body-parser";
 import {Request, Response} from "express";
+import * as dotenv from 'dotenv';
 import {Routes} from "./routes";
 import {User} from "./entity/User";
 
@@ -26,16 +27,14 @@ createConnection().then(async connection => {
         });
     });
 
-    // setup express app here
     const corsOption = {
         origin: "http://localhost:3000",
         credentials: true,
       }
     
-    // start express server
     app.listen(3001);
     app.use(cors(corsOption));
-
+    const env = dotenv.config()
     // add dummy data for testing
     await connection.manager.save(connection.manager.create(User, {
         publicKey: "fhs",

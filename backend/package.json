@@ -5,15 +5,18 @@
    "devDependencies": {
       "@types/cors": "^2.8.7",
       "@types/node": "^8.0.29",
+      "dotenv": "^8.2.0",
       "ts-node": "3.3.0",
       "typescript": "3.3.3333"
    },
    "dependencies": {
+      "@types/stripe": "^7.13.25",
       "body-parser": "^1.18.1",
       "cors": "^2.8.5",
       "express": "^4.15.4",
       "mysql": "^2.14.1",
       "reflect-metadata": "^0.1.10",
+      "stripe": "^8.116.0",
       "tronweb": "^3.1.0",
       "typeorm": "0.2.28"
    },

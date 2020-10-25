@@ -1,3 +1,4 @@
+import { TransactionController } from "./controller/TransactionController";
 import {UserController} from "./controller/UserController";
 
 export const Routes = [{
@@ -25,4 +26,15 @@ export const Routes = [{
     route: "/users/:id",
     controller: UserController,
     action: "remove"
-}];
+}, {
+    method: "post",
+    route: "/buy-sharewon",
+    controller:TransactionController ,
+    action:"buy",
+}, { 
+    method: "post",
+    route: "/sell-sharewon", 
+    controller:TransactionController,
+    action:"sell"
+}
+];
