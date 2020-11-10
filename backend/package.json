@@ -5,6 +5,7 @@
    "devDependencies": {
       "@types/cors": "^2.8.7",
       "@types/node": "^8.0.29",
+      "@types/node-fetch": "^2.5.7",
       "dotenv": "^8.2.0",
       "ts-node": "3.3.0",
       "typescript": "3.3.3333"
@@ -15,6 +16,7 @@
       "cors": "^2.8.5",
       "express": "^4.15.4",
       "mysql": "^2.14.1",
+      "node-fetch": "^2.6.1",
       "reflect-metadata": "^0.1.10",
       "stripe": "^8.116.0",
       "tronweb": "^3.1.0",
