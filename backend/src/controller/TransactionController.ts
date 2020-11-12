@@ -79,13 +79,14 @@ export class TransactionController {
     @params request.body { 
       admin_address, 
       user_address,
+      owner_address
       timestamp 
     }
   */
   async sell(request: Request, response: Response, next: NextFunction) {
-    const { admin_address, user_address, timestamp } = request.body;
+    const { admin_address, user_address, owner_address, timestamp } = request.body;
     const transactionsRes = await fetch(
-      `https://apilist.tronscan.org/api/trc10trc20-transfer?sort=-timestamp&count=true&start=0&total=0&direction=&address=${user_address}`
+      `https://apilist.tronscan.org/api/trc10trc20-transfer?sort=-timestamp&count=true&start=0&total=0&direction=&address=${owner_address}`
     );
     const data = transactionsRes.json();
     const transfers = data["transfers"];
@@ -93,7 +94,8 @@ export class TransactionController {
       (transfer) =>
         transfer["to_address"] == admin_address &&
         transfer["timestamp"] == timestamp &&
-        transfer["confirmed"] == true
+        transfer["confirmed"] == true && 
+        transfer["from_address"] == user_address 
     );
     if(toAdminTransfers.length > 0){ 
       //start process to send money to user's stripe account 
