@@ -46,7 +46,7 @@ export class UserController {
         try {
             const verify = tronWeb.trx.verifyMessage(data.hexMessage, data.signature, data.publicKey)
             if(verify){ 
-                const user = await this.userRepository.findOne(data.publicKey)
+                const user = await this.userRepository.findOne({where: {publicKey: data.publicKey}}); 
                 if(!!user && user.userRole == "admin"){
                     return {
                         isAdmin: true 
