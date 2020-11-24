@@ -27,13 +27,13 @@ createConnection().then(async connection => {
         });
     });
 
-    const corsOption = {
-        origin: "http://localhost:3000",
-        credentials: true,
-      }
+    // const corsOption = {
+    //     origin: "http://localhost:3000",
+    //     credentials: false,
+    //   }
     
     app.listen(3001);
-    app.use(cors(corsOption));
+    app.use(cors());
     const env = dotenv.config()
     // add dummy data for testing
     await connection.manager.save(connection.manager.create(User, {
@@ -47,6 +47,6 @@ createConnection().then(async connection => {
         userRole: "user"
     }));
 
-    console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results");
+    console.log("Express server has started on port 3001");
 
 }).catch(error => console.log(error));

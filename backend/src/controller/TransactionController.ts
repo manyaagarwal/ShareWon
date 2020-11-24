@@ -28,6 +28,7 @@ export class TransactionController {
     try {
       // Create a PaymentIntent with the order amount and currency
       const paymentIntent = await stripe.paymentIntents.create({
+        payment_method_types: ['card'],
         amount: amount, //amount is in cents
         currency: currency,
       });
@@ -39,13 +40,17 @@ export class TransactionController {
         transaction_address: "", //probably to be updated in a different function
         createdAt: new Date(),
       };
+      response.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
+      response.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+      );
       response.send({
         paymentIntentId: paymentIntent.id,
         publishableKey: stripePublicKey,
         clientSecret: paymentIntent.client_secret,
       });
-
-      return this.transactionRepository.save(transaction);
+      await this.transactionRepository.save(transaction);
     } catch (e) {
       console.log(e);
     }
@@ -84,7 +89,12 @@ export class TransactionController {
     }
   */
   async sell(request: Request, response: Response, next: NextFunction) {
-    const { admin_address, user_address, owner_address, timestamp } = request.body;
+    const {
+      admin_address,
+      user_address,
+      owner_address,
+      timestamp,
+    } = request.body;
     const transactionsRes = await fetch(
       `https://apilist.tronscan.org/api/trc10trc20-transfer?sort=-timestamp&count=true&start=0&total=0&direction=&address=${owner_address}`
     );
@@ -94,16 +104,15 @@ export class TransactionController {
       (transfer) =>
         transfer["to_address"] == admin_address &&
         transfer["timestamp"] == timestamp &&
-        transfer["confirmed"] == true && 
-        transfer["from_address"] == user_address 
+        transfer["confirmed"] == true &&
+        transfer["from_address"] == user_address
     );
-    if(toAdminTransfers.length > 0){ 
-      //start process to send money to user's stripe account 
-       
-    } else { 
-      response.send({ 
-        message: 'Sell Transaction not found'
-      })
+    if (toAdminTransfers.length > 0) {
+      //start process to send money to user's stripe account
+    } else {
+      response.send({
+        message: "Sell Transaction not found",
+      });
     }
   }
 
@@ -126,7 +135,7 @@ export class TransactionController {
         type: type,
       })
       .getMany();
-    response.send({transactions})
+    response.send({ transactions });
   }
 
   async remove(request: Request, response: Response, next: NextFunction) {

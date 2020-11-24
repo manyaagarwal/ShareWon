@@ -5,7 +5,6 @@ export const RECOVER_WALLET = "RECOVER_WALLET";
 export const FETCH_WALLET = "FETCH_WALET";
 
 export const createWallet = async () => {
-  console.log("here")
   tronWeb.setAddress("TPRTB2sNG79uA6nTrHMSceTSgncjSVMnQt");
   const bip39 = require("bip39");
   const ethers = require("ethers");
